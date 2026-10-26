@@ -50,11 +50,25 @@ jobs:
               if [ -n "$M" ]; then body="$V"$'\n\n'"<!-- factory:marker=$M -->"; fi
               gh api --method POST "repos/$R/issues/$I/comments" -f body="$body"
               ;;
-            label)
-              gh api --method POST "repos/$R/issues/$I/labels" -f labels[]="$V"
-              ;;
-            unlabel)
-              gh api --method DELETE "repos/$R/issues/$I/labels/$V"
+            label|unlabel)
+              # Layer 1 of the gate protocol (ADR-0009): the bot must never be
+              # able to write a gate label. Without this guard the generic
+              # `label` action accepts ANY name, including factory:approved,
+              # which was verified to succeed before this guard existed.
+              # Provenance checking (layer 2) would still reject it, but the
+              # route should not exist at all.
+              case "$V" in
+                factory:approved|factory:revise)
+                  echo "refusing to write gate label '$V' as the bot" >&2
+                  echo "gate labels must be applied by a human identity" >&2
+                  exit 1
+                  ;;
+              esac
+              if [ "$A" = "label" ]; then
+                gh api --method POST "repos/$R/issues/$I/labels" -f labels[]="$V"
+              else
+                gh api --method DELETE "repos/$R/issues/$I/labels/$V"
+              fi
               ;;
             close)
               gh api --method PATCH "repos/$R/issues/$I" -f state=closed
