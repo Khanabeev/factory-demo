@@ -1,0 +1,17 @@
+name: botprobe
+on:
+  workflow_dispatch:
+    inputs:
+      issue:
+        required: true
+permissions:
+  issues: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --method POST repos/${{ github.repository }}/issues/${{ inputs.issue }}/comments \
+            -f body="bot identity probe"
