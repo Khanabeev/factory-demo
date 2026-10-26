@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local Ollama",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1"
+      },
+      "models": {
+        "deepseek-v4.1-flash:cloud": {
+          "name": "DeepSeek v4.1 Flash (cloud)",
+          "tools": true
+        }
+      }
+    }
+  },
+  "model": "ollama/deepseek-v4.1-flash:cloud"
+}
