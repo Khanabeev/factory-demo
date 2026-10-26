@@ -6,6 +6,7 @@ on:
         required: true
 permissions:
   issues: write
+  pull-requests: write
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -13,5 +14,12 @@ jobs:
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh api --method POST repos/${{ github.repository }}/issues/${{ inputs.issue }}/comments \
-            -f body="bot identity probe"
+          set -e
+          R="${{ github.repository }}"
+          I="${{ inputs.issue }}"
+          gh api --method POST "repos/$R/issues/$I/labels" -f labels[]='ready-for-human'
+          echo "labeled ok"
+          gh api --method PATCH "repos/$R/issues/$I" -f state=closed
+          echo "closed ok"
+          gh api --method PATCH "repos/$R/issues/$I" -f state=open
+          echo "reopened ok"
