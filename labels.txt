@@ -1,0 +1,14 @@
+# Label vocabulary installed into a target repo.
+
+# Triage state
+needs-triage|FBCA04|Maintainer needs to evaluate
+needs-info|D4C5F9|Waiting on reporter for more information
+ready-for-agent|0E8A16|Fully specified, ready for an AFK agent
+ready-for-human|1D76DB|Requires human implementation or decision
+
+# Factory commands
+factory:grill|FF7B72|Start a grilling session
+factory:spec|FF7B72|Synthesize a spec issue
+factory:tickets|FF7B72|Break an approved spec into build tickets
+factory:implement|FF7B72|Claim and implement this build ticket
+factory:deploy|FF7B72|Trigger the deploy pipeline
